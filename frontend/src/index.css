@@ -1,0 +1,147 @@
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+@layer base {
+  :root {
+    --background: 36 33% 97%;
+    --foreground: 222 32% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 32% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 32% 14%;
+
+    --primary: 18 82% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 34 35% 92%;
+    --secondary-foreground: 222 32% 14%;
+
+    --muted: 32 28% 93%;
+    --muted-foreground: 222 12% 42%;
+
+    --accent: 24 75% 93%;
+    --accent-foreground: 18 82% 34%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 54% 38%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 39 92% 48%;
+    --warning-foreground: 0 0% 12%;
+
+    --border: 26 23% 84%;
+    --input: 26 23% 84%;
+    --ring: 18 82% 56%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 20 40% 12%;
+    --sidebar-foreground: 36 33% 93%;
+    --sidebar-border: 18 28% 22%;
+    --sidebar-accent: 18 38% 20%;
+    --sidebar-accent-foreground: 0 0% 100%;
+
+    --chart-1: 18 82% 56%;
+    --chart-2: 152 54% 38%;
+    --chart-3: 39 92% 48%;
+    --chart-4: 211 72% 56%;
+    --chart-5: 0 84% 60%;
+  }
+
+  .dark {
+    --background: 20 26% 7%;
+    --foreground: 36 28% 92%;
+
+    --card: 20 22% 11%;
+    --card-foreground: 36 28% 92%;
+
+    --popover: 20 22% 11%;
+    --popover-foreground: 36 28% 92%;
+
+    --primary: 18 88% 60%;
+    --primary-foreground: 20 26% 7%;
+
+    --secondary: 24 18% 18%;
+    --secondary-foreground: 36 28% 92%;
+
+    --muted: 24 18% 16%;
+    --muted-foreground: 30 12% 66%;
+
+    --accent: 18 34% 18%;
+    --accent-foreground: 36 28% 92%;
+
+    --destructive: 0 74% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 54% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 55%;
+    --warning-foreground: 20 26% 7%;
+
+    --border: 22 18% 21%;
+    --input: 22 18% 21%;
+    --ring: 18 88% 60%;
+
+    --sidebar-background: 18 26% 9%;
+    --sidebar-foreground: 36 28% 92%;
+    --sidebar-border: 22 18% 17%;
+    --sidebar-accent: 18 28% 16%;
+    --sidebar-accent-foreground: 0 0% 100%;
+
+    --chart-1: 18 88% 60%;
+    --chart-2: 152 54% 40%;
+    --chart-3: 39 92% 55%;
+    --chart-4: 211 72% 56%;
+    --chart-5: 0 74% 60%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-family: Bahnschrift, 'Aptos', 'Trebuchet MS', sans-serif;
+    margin: 0;
+    background-image:
+      radial-gradient(circle at top left, rgba(244, 123, 63, 0.14), transparent 26%),
+      radial-gradient(circle at top right, rgba(61, 188, 152, 0.1), transparent 22%),
+      linear-gradient(180deg, rgba(255, 250, 245, 0.88), rgba(246, 239, 231, 0.96));
+    min-height: 100vh;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(circle at top left, rgba(244, 123, 63, 0.16), transparent 24%),
+      radial-gradient(circle at top right, rgba(61, 188, 152, 0.08), transparent 22%),
+      linear-gradient(180deg, rgba(20, 13, 11, 0.98), rgba(15, 11, 10, 1));
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Segoe UI Variable Display', Bahnschrift, 'Trebuchet MS', sans-serif;
+    letter-spacing: -0.03em;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+}
