@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Dialog,
@@ -37,13 +36,14 @@ const employeeSchema = z.object({
   password: z.string().optional(),
   phone: z.string().min(8, 'Telefone inválido.'),
   cpf: z.string().min(11, 'CPF inválido.'),
-  role: z.enum(['ADMIN', 'RECEPTIONIST', 'INSTRUCTOR', 'STUDENT']),
+  role: z.enum(['RECEPTIONIST', 'INSTRUCTOR']),
   position: z.string().min(2, 'Informe o cargo.'),
   hiredAt: z.string().min(1, 'Informe a data de contratação.'),
   salary: z.number().nonnegative().optional(),
 })
 
 type EmployeeFormData = z.infer<typeof employeeSchema>
+type EmployeeRole = EmployeeFormData['role']
 
 export function EmployeesPage() {
   const [page, setPage] = useState(0)
@@ -102,7 +102,7 @@ export function EmployeesPage() {
       password: '',
       phone: employee.phone,
       cpf: employee.cpf,
-      role: employee.role,
+      role: employee.role === 'INSTRUCTOR' ? 'INSTRUCTOR' : 'RECEPTIONIST',
       position: employee.position,
       hiredAt: employee.hiredAt?.slice(0, 10),
       salary: employee.salary ?? 0,
@@ -218,12 +218,11 @@ export function EmployeesPage() {
               </div>
               <div className="col-span-2">
                 <Label className="mb-1.5 block">Perfil (cargo)</Label>
-                <Select value={watch('role')} onValueChange={(value) => setValue('role', value as Role)}>
+                <Select value={watch('role')} onValueChange={(value) => setValue('role', value as EmployeeRole)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ADMIN">Administrador</SelectItem>
                     <SelectItem value="RECEPTIONIST">Recepcionista</SelectItem>
                     <SelectItem value="INSTRUCTOR">Instrutor</SelectItem>
                   </SelectContent>

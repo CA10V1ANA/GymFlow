@@ -22,6 +22,14 @@ export function useWorkout(id?: string) {
   })
 }
 
+export function useMyWorkouts(params?: PageParams) {
+  return useQuery({
+    queryKey: [WORKOUTS_KEY, 'me', params],
+    queryFn: () => workoutService.listMine(params),
+    placeholderData: (prev) => prev,
+  })
+}
+
 export function useCreateWorkout() {
   const queryClient = useQueryClient()
   return useMutation({

@@ -2,6 +2,9 @@ package com.gymflow.pro.controller;
 
 import com.gymflow.pro.dto.request.WorkoutRequest;
 import com.gymflow.pro.dto.response.WorkoutResponse;
+import com.gymflow.pro.entity.Student;
+import com.gymflow.pro.exception.ResourceNotFoundException;
+import com.gymflow.pro.security.SecurityUtils;
 import com.gymflow.pro.service.WorkoutService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,6 +26,7 @@ import java.util.UUID;
 public class WorkoutController {
 
     private final WorkoutService workoutService;
+    private final SecurityUtils securityUtils;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR','RECEPTIONIST')")
@@ -31,13 +36,22 @@ public class WorkoutController {
 
     @GetMapping("/student/{studentId}")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR','RECEPTIONIST','STUDENT')")
-    public ResponseEntity<Page<WorkoutResponse>> findByStudent(@PathVariable UUID studentId, Pageable pageable) {
+    public ResponseEntity<Page<WorkoutResponse>> findByStudent(@PathVariable UUID studentId, Pageable pageable,
+                                                               Authentication authentication) {
+        securityUtils.assertOwnStudentIfStudentRole(studentId, authentication);
         return ResponseEntity.ok(workoutService.findByStudent(studentId, pageable));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Page<WorkoutResponse>> myWorkouts(Pageable pageable, Authentication authentication) {
+        return ResponseEntity.ok(workoutService.findByStudent(currentStudentIdOrThrow(authentication), pageable));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR','RECEPTIONIST','STUDENT')")
-    public ResponseEntity<WorkoutResponse> findById(@PathVariable UUID id) {
+    public ResponseEntity<WorkoutResponse> findById(@PathVariable UUID id, Authentication authentication) {
+        securityUtils.assertOwnWorkoutIfStudentRole(id, authentication);
         return ResponseEntity.ok(workoutService.findById(id));
     }
 
@@ -58,5 +72,11 @@ public class WorkoutController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         workoutService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private UUID currentStudentIdOrThrow(Authentication authentication) {
+        return securityUtils.currentStudent(authentication)
+                .map(Student::getId)
+                .orElseThrow(() -> new ResourceNotFoundException("No student profile linked to the current account"));
     }
 }

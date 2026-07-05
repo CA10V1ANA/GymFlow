@@ -2,6 +2,9 @@ package com.gymflow.pro.controller;
 
 import com.gymflow.pro.dto.request.CheckInRequest;
 import com.gymflow.pro.dto.response.AttendanceResponse;
+import com.gymflow.pro.entity.Student;
+import com.gymflow.pro.exception.ResourceNotFoundException;
+import com.gymflow.pro.security.SecurityUtils;
 import com.gymflow.pro.service.AttendanceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +28,7 @@ import java.util.UUID;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
+    private final SecurityUtils securityUtils;
 
     @PostMapping("/check-in")
     @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST')")
@@ -51,15 +56,38 @@ public class AttendanceController {
 
     @GetMapping("/student/{studentId}")
     @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST','INSTRUCTOR','STUDENT')")
-    public ResponseEntity<List<AttendanceResponse>> historyByStudent(@PathVariable UUID studentId) {
+    public ResponseEntity<List<AttendanceResponse>> historyByStudent(@PathVariable UUID studentId, Authentication authentication) {
+        securityUtils.assertOwnStudentIfStudentRole(studentId, authentication);
         return ResponseEntity.ok(attendanceService.historyByStudent(studentId));
     }
 
     @GetMapping("/student/{studentId}/frequency")
     @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST','INSTRUCTOR','STUDENT')")
-    public ResponseEntity<Map<String, Long>> frequency(@PathVariable UUID studentId) {
+    public ResponseEntity<Map<String, Long>> frequency(@PathVariable UUID studentId, Authentication authentication) {
+        securityUtils.assertOwnStudentIfStudentRole(studentId, authentication);
         return ResponseEntity.ok(Map.of(
                 "daily", attendanceService.dailyFrequency(studentId),
                 "monthly", attendanceService.monthlyFrequency(studentId)));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<List<AttendanceResponse>> myHistory(Authentication authentication) {
+        return ResponseEntity.ok(attendanceService.historyByStudent(currentStudentIdOrThrow(authentication)));
+    }
+
+    @GetMapping("/me/frequency")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Map<String, Long>> myFrequency(Authentication authentication) {
+        UUID studentId = currentStudentIdOrThrow(authentication);
+        return ResponseEntity.ok(Map.of(
+                "daily", attendanceService.dailyFrequency(studentId),
+                "monthly", attendanceService.monthlyFrequency(studentId)));
+    }
+
+    private UUID currentStudentIdOrThrow(Authentication authentication) {
+        return securityUtils.currentStudent(authentication)
+                .map(Student::getId)
+                .orElseThrow(() -> new ResourceNotFoundException("No student profile linked to the current account"));
     }
 }

@@ -1,6 +1,7 @@
 package com.gymflow.pro.service;
 
 import com.gymflow.pro.dto.request.StudentRequest;
+import com.gymflow.pro.dto.request.StudentSelfUpdateRequest;
 import com.gymflow.pro.dto.response.EnrollmentResponse;
 import com.gymflow.pro.dto.response.StudentResponse;
 import com.gymflow.pro.entity.enums.StudentStatus;
@@ -19,6 +20,8 @@ public interface StudentService {
     StudentResponse create(StudentRequest request);
 
     StudentResponse update(UUID id, StudentRequest request);
+
+    StudentResponse updateSelf(UUID id, StudentSelfUpdateRequest request);
 
     void delete(UUID id);
 

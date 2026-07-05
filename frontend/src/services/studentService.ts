@@ -66,6 +66,7 @@ function toStudentRequest(payload: StudentPayload) {
     gender: payload.gender,
     phone: payload.phone,
     email: payload.email,
+    password: payload.password || undefined,
     zipCode: payload.zipCode,
     address: payload.address,
     addressNumber: payload.addressNumber,

@@ -79,6 +79,10 @@ export const workoutService = {
     const { data } = await api.get<Page<WorkoutApiResponse>>('/workouts', { params })
     return { ...data, content: (data.content ?? []).map(normalizeWorkout) }
   },
+  listMine: async (params?: PageParams): Promise<Page<Workout>> => {
+    const { data } = await api.get<Page<WorkoutApiResponse>>('/workouts/me', { params })
+    return { ...data, content: (data.content ?? []).map(normalizeWorkout) }
+  },
   getById: async (id: string): Promise<Workout> => {
     const { data } = await api.get<WorkoutApiResponse>(`/workouts/${id}`)
     return normalizeWorkout(data)

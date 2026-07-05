@@ -28,6 +28,14 @@ export const attendanceService = {
     const { data } = await api.get<Page<AttendanceApiResponse>>('/attendances', { params })
     return { ...data, content: (data.content ?? []).map(normalizeAttendance) }
   },
+  listMine: async (): Promise<Attendance[]> => {
+    const { data } = await api.get<AttendanceApiResponse[]>('/attendances/me')
+    return data.map(normalizeAttendance)
+  },
+  myFrequency: async (): Promise<{ daily: number; monthly: number }> => {
+    const { data } = await api.get<{ daily: number; monthly: number }>('/attendances/me/frequency')
+    return data
+  },
   checkIn: async (payload: CheckInPayload): Promise<Attendance> => {
     const { data } = await api.post<AttendanceApiResponse>('/attendances/check-in', payload)
     return normalizeAttendance(data)

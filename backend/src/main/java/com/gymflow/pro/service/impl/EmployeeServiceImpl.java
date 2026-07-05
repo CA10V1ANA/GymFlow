@@ -5,6 +5,7 @@ import com.gymflow.pro.dto.response.EmployeeResponse;
 import com.gymflow.pro.entity.Employee;
 import com.gymflow.pro.entity.User;
 import com.gymflow.pro.entity.enums.StudentStatus;
+import com.gymflow.pro.entity.enums.UserRole;
 import com.gymflow.pro.exception.BusinessException;
 import com.gymflow.pro.exception.ResourceNotFoundException;
 import com.gymflow.pro.mapper.EmployeeMapper;
@@ -45,6 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse create(EmployeeRequest request) {
+        validateEmployeeRole(request.getRole());
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BusinessException("A user with this email already exists");
         }
@@ -80,6 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse update(UUID id, EmployeeRequest request) {
+        validateEmployeeRole(request.getRole());
         Employee employee = getEmployeeOrThrow(id);
         User user = employee.getUser();
 
@@ -115,5 +118,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private Employee getEmployeeOrThrow(UUID id) {
         return employeeRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.of("Employee", id));
+    }
+
+    private void validateEmployeeRole(UserRole role) {
+        if (role != UserRole.RECEPTIONIST && role != UserRole.INSTRUCTOR) {
+            throw new BusinessException("Employees can only have RECEPTIONIST or INSTRUCTOR role");
+        }
     }
 }

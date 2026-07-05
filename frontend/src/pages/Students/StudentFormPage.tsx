@@ -22,6 +22,7 @@ const studentSchema = z.object({
   gender: z.enum(['MALE', 'FEMALE', 'OTHER']),
   phone: z.string().min(8, 'Telefone inválido.'),
   email: z.string().email('Email inválido.'),
+  password: z.string().optional(),
   zipCode: z.string().min(8, 'CEP inválido.'),
   address: z.string().min(3, 'Informe o endereço.'),
   addressNumber: z.string().optional(),
@@ -45,6 +46,7 @@ const defaultValues: StudentFormData = {
   gender: 'MALE',
   phone: '',
   email: '',
+  password: '',
   zipCode: '',
   address: '',
   addressNumber: '',
@@ -85,6 +87,7 @@ export function StudentFormPage() {
         gender: student.gender,
         phone: student.phone,
         email: student.email,
+        password: '',
         zipCode: student.zipCode,
         address: student.address,
         addressNumber: student.addressNumber ?? '',
@@ -109,6 +112,7 @@ export function StudentFormPage() {
       gender: data.gender,
       phone: data.phone,
       email: data.email,
+      password: data.password || undefined,
       zipCode: data.zipCode,
       address: data.address,
       addressNumber: data.addressNumber,
@@ -178,6 +182,9 @@ export function StudentFormPage() {
             </Field>
             <Field label="Email" error={errors.email?.message}>
               <Input type="email" {...register('email')} />
+            </Field>
+            <Field label={isEditing ? 'Nova senha de acesso' : 'Senha de acesso'} error={errors.password?.message}>
+              <Input type="password" {...register('password')} />
             </Field>
             <Field label="Status" error={errors.status?.message}>
               <Select value={watch('status')} onValueChange={(value) => setValue('status', value as StudentFormData['status'])}>

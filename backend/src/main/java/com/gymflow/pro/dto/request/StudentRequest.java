@@ -33,6 +33,12 @@ public class StudentRequest {
     @Email(message = "Email must be valid")
     private String email;
 
+    /**
+     * Optional account password. When present on create, the student receives
+     * a STUDENT login linked to this profile.
+     */
+    private String password;
+
     private String zipCode;
     private String address;
     private String addressNumber;

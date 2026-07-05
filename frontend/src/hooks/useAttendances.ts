@@ -26,6 +26,20 @@ export function useCheckIn() {
   })
 }
 
+export function useMyAttendanceHistory() {
+  return useQuery({
+    queryKey: [ATTENDANCES_KEY, 'me'],
+    queryFn: attendanceService.listMine,
+  })
+}
+
+export function useMyAttendanceFrequency() {
+  return useQuery({
+    queryKey: [ATTENDANCES_KEY, 'me', 'frequency'],
+    queryFn: attendanceService.myFrequency,
+  })
+}
+
 export function useCheckOut() {
   const queryClient = useQueryClient()
   return useMutation({

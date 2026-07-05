@@ -2,12 +2,14 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Activity,
   BarChart3,
+  CalendarCheck,
   ClipboardList,
   Dumbbell,
   LayoutDashboard,
   ListChecks,
   Package,
   ShieldCheck,
+  User,
   UserCog,
   Users,
   Wallet,
@@ -29,7 +31,7 @@ export function getDefaultRouteForRole(role: Role): string {
     case 'INSTRUCTOR':
       return '/students'
     case 'STUDENT':
-      return '/attendance'
+      return '/profile'
   }
 }
 
@@ -105,5 +107,23 @@ export const navItems: NavItem[] = [
     path: '/audit',
     icon: ShieldCheck,
     roles: ['ADMIN'],
+  },
+  {
+    label: 'Meu Perfil',
+    path: '/profile',
+    icon: User,
+    roles: ['STUDENT'],
+  },
+  {
+    label: 'Meus Treinos',
+    path: '/my-workouts',
+    icon: Dumbbell,
+    roles: ['STUDENT'],
+  },
+  {
+    label: 'Minha Presenca',
+    path: '/my-attendance',
+    icon: CalendarCheck,
+    roles: ['STUDENT'],
   },
 ]

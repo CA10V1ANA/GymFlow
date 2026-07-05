@@ -31,4 +31,6 @@ export interface Student {
   updatedAt: string
 }
 
-export type StudentPayload = Omit<Student, 'id' | 'createdAt' | 'updatedAt' | 'registrationCode'>
+export type StudentPayload = Omit<Student, 'id' | 'createdAt' | 'updatedAt' | 'registrationCode'> & {
+  password?: string
+}

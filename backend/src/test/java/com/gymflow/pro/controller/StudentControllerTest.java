@@ -8,6 +8,7 @@ import com.gymflow.pro.entity.enums.StudentStatus;
 import com.gymflow.pro.exception.ResourceNotFoundException;
 import com.gymflow.pro.security.CustomUserDetailsService;
 import com.gymflow.pro.security.JwtTokenProvider;
+import com.gymflow.pro.security.SecurityUtils;
 import com.gymflow.pro.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ class StudentControllerTest {
 
     @MockBean
     private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private SecurityUtils securityUtils;
 
     private StudentRequest validRequest() {
         StudentRequest request = new StudentRequest();

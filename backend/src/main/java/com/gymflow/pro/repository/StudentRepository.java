@@ -17,6 +17,8 @@ public interface StudentRepository extends JpaRepository<Student, UUID>, JpaSpec
 
     Optional<Student> findByRegistrationCode(String registrationCode);
 
+    Optional<Student> findByUserId(UUID userId);
+
     long countByStatus(StudentStatus status);
 
     long countByCreatedAtGreaterThanEqual(LocalDateTime since);

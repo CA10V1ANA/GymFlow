@@ -19,7 +19,17 @@ import { FinancialPage } from '@/pages/Financial/FinancialPage'
 import { ProductsPage } from '@/pages/Products/ProductsPage'
 import { ReportsPage } from '@/pages/Reports/ReportsPage'
 import { AuditPage } from '@/pages/Audit/AuditPage'
+import { MyProfilePage } from '@/pages/Profile/MyProfilePage'
+import { MyWorkoutsPage } from '@/pages/Profile/MyWorkoutsPage'
+import { MyAttendancePage } from '@/pages/Profile/MyAttendancePage'
 import { NotFoundPage } from '@/pages/NotFound/NotFoundPage'
+import { useAuth } from '@/hooks/useAuth'
+import { getDefaultRouteForRole } from '@/components/shared/navigation'
+
+function HomeRedirect() {
+  const { user } = useAuth()
+  return <Navigate to={user ? getDefaultRouteForRole(user.role) : '/dashboard'} replace />
+}
 
 export function AppRoutes() {
   return (
@@ -38,16 +48,69 @@ export function AppRoutes() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute roles={['ADMIN', 'RECEPTIONIST']}>
+            <ProtectedRoute roles={['ADMIN', 'RECEPTIONIST', 'INSTRUCTOR']}>
               <DashboardPage />
             </ProtectedRoute>
           }
         />
 
-        <Route path="/students" element={<StudentsListPage />} />
-        <Route path="/students/new" element={<StudentFormPage />} />
-        <Route path="/students/:id" element={<StudentDetailPage />} />
-        <Route path="/students/:id/edit" element={<StudentFormPage />} />
+        <Route
+          path="/students"
+          element={
+            <ProtectedRoute roles={['ADMIN', 'RECEPTIONIST', 'INSTRUCTOR']}>
+              <StudentsListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/students/new"
+          element={
+            <ProtectedRoute roles={['ADMIN', 'RECEPTIONIST']}>
+              <StudentFormPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/students/:id"
+          element={
+            <ProtectedRoute roles={['ADMIN', 'RECEPTIONIST', 'INSTRUCTOR']}>
+              <StudentDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/students/:id/edit"
+          element={
+            <ProtectedRoute roles={['ADMIN', 'RECEPTIONIST']}>
+              <StudentFormPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute roles={['STUDENT']}>
+              <MyProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-workouts"
+          element={
+            <ProtectedRoute roles={['STUDENT']}>
+              <MyWorkoutsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-attendance"
+          element={
+            <ProtectedRoute roles={['STUDENT']}>
+              <MyAttendancePage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/plans"
@@ -118,7 +181,14 @@ export function AppRoutes() {
           }
         />
 
-        <Route path="/attendance" element={<AttendancePage />} />
+        <Route
+          path="/attendance"
+          element={
+            <ProtectedRoute roles={['ADMIN', 'RECEPTIONIST', 'INSTRUCTOR']}>
+              <AttendancePage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/financial"
@@ -156,10 +226,10 @@ export function AppRoutes() {
           }
         />
 
-        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route index element={<HomeRedirect />} />
       </Route>
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<HomeRedirect />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )

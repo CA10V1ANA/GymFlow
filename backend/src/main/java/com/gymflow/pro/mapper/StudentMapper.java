@@ -1,6 +1,7 @@
 package com.gymflow.pro.mapper;
 
 import com.gymflow.pro.dto.request.StudentRequest;
+import com.gymflow.pro.dto.request.StudentSelfUpdateRequest;
 import com.gymflow.pro.dto.response.StudentResponse;
 import com.gymflow.pro.dto.response.StudentSummaryResponse;
 import com.gymflow.pro.entity.Student;
@@ -18,4 +19,6 @@ public interface StudentMapper {
     StudentSummaryResponse toSummary(Student student);
 
     void updateEntity(StudentRequest request, @MappingTarget Student student);
+
+    void updateSelfEntity(StudentSelfUpdateRequest request, @MappingTarget Student student);
 }

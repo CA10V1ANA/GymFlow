@@ -12,6 +12,7 @@ import com.gymflow.pro.mapper.EnrollmentMapper;
 import com.gymflow.pro.mapper.StudentMapper;
 import com.gymflow.pro.repository.EnrollmentRepository;
 import com.gymflow.pro.repository.StudentRepository;
+import com.gymflow.pro.repository.UserRepository;
 import com.gymflow.pro.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -50,10 +52,16 @@ class StudentServiceImplTest {
     private EnrollmentRepository enrollmentRepository;
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private StudentMapper studentMapper;
 
     @Mock
     private EnrollmentMapper enrollmentMapper;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     private StudentServiceImpl studentService;
 
@@ -62,7 +70,13 @@ class StudentServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        studentService = new StudentServiceImpl(studentRepository, enrollmentRepository, studentMapper, enrollmentMapper);
+        studentService = new StudentServiceImpl(
+                studentRepository,
+                enrollmentRepository,
+                userRepository,
+                studentMapper,
+                enrollmentMapper,
+                passwordEncoder);
         studentId = UUID.randomUUID();
         student = Student.builder()
                 .id(studentId)
